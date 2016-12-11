@@ -1,16 +1,50 @@
 #!/bin/sh
 
-set -e
+warn()
+{
+    echo "$(basename $0): $1" >&2
+}
+
+# XXX command to export results somewhere
+usage()
+{
+    cat <<__EOF__
+Usage: $(basename $0) <command> options
+
+Commands:
+    job         -- Manage benchmark jobs
+    machine     -- Manage benchmark machines
+    run         -- Launch a benchmark job
+__EOF__
+    exit 1
+}
+
+[ $# -lt 1 ] && usage
+
+cmd=$1
+shift
+case $cmd in
+job|machine|run)
+    ;;
+*)
+    usage
+    ;;
+esac
 
 UBENCH_ROOT=${HOME}/ubench
-
-init_hier()
-{
+if [ ! -d ${UBENCH_ROOT} ]; then
+    warn "Creating directory hierarchy under ${UBENCH_ROOT}"
     mkdir ${UBENCH_ROOT}
     mkdir ${UBENCH_ROOT}/jobs
     mkdir ${UBENCH_ROOT}/machines
-}
-
-if [ ! -d ${UBENCH_ROOT} ]; then
-    init_hier
 fi
+
+UBENCH_CMDPATH=$(dirname $(realpath $0))
+UBENCH_CMDPREFIX=${UBENCH_CMDPATH}/cmd
+UBENCH_LIBPREFIX=${UBENCH_CMDPATH}/lib
+
+CMD_ENV="PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin"
+CMD_ENV="${CMD_ENV} UBENCH_ROOT=${UBENCH_ROOT}"
+CMD_ENV="${CMD_ENV} UBENCH_LIBPREFIX=${UBENCH_LIBPREFIX}"
+
+exec env -i ${CMD_ENV} sh "${UBENCH_CMDPREFIX}/${cmd}.sh" "$@"
