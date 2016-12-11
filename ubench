@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -e
+
+UBENCH_ROOT=${HOME}/ubench
+
+init_hier()
+{
+    mkdir ${UBENCH_ROOT}
+    mkdir ${UBENCH_ROOT}/jobs
+    mkdir ${UBENCH_ROOT}/machines
+}
+
+if [ ! -d ${UBENCH_ROOT} ]; then
+    init_hier
+fi
