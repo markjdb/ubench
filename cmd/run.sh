@@ -17,7 +17,7 @@ set -e
 
 # XXX we need to have a job lock
 
-cd $JOB_SRCTREE
+cd $TREE_PATH
 git remote update
 if ! git status | grep "Your branch is behind "; then
     # XXX false if we committed locally...
@@ -32,13 +32,13 @@ git pull
 #     for now this is simple though
 # XXX make kernel config an (optional) job param, default to GENERIC_NODEBUG
 # XXX make src.conf/make.conf optional
-MAKEOBJDIRPREFIX=${JOB_OBJDIR} make -s -j $(sysctl -n hw.ncpu) \
+MAKEOBJDIRPREFIX=${TREE_OBJDIR} make -s -j $(sysctl -n hw.ncpu) \
     buildworld buildkernel -DNO_CLEAN -DNO_KERNELCLEAN \
     KERNCONF=GENERIC-NODEBUG __MAKE_CONF=/dev/null SRCCONF=/dev/null
 
 ipmitool $MACHINE_IPMITOOL power off
 
-MAKEOBJDIRPREFIX=${JOB_OBJDIR} make -s -j $(sysctl -n hw.ncpu) \
+MAKEOBJDIRPREFIX=${TREE_OBJDIR} make -s -j $(sysctl -n hw.ncpu) \
     installworld installkernel \
     KERNCONF=GENERIC-NODEBUG __MAKE_CONF=/dev/null SRCCONF=/dev/null \
     DESTDIR=${MACHINE_ROOTDIR}

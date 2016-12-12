@@ -15,6 +15,7 @@ Commands:
     job         -- Manage benchmark jobs
     machine     -- Manage benchmark machines
     run         -- Launch a benchmark job
+    tree        -- Manage FreeBSD source trees
 __EOF__
     exit 1
 }
@@ -24,7 +25,7 @@ __EOF__
 cmd=$1
 shift
 case $cmd in
-job|machine|run)
+job|machine|run|tree)
     ;;
 *)
     usage
@@ -37,6 +38,7 @@ if [ ! -d ${UBENCH_ROOT} ]; then
     mkdir ${UBENCH_ROOT}
     mkdir ${UBENCH_ROOT}/jobs
     mkdir ${UBENCH_ROOT}/machines
+    mkdir ${UBENCH_ROOT}/trees
 fi
 
 UBENCH_PATH=$(dirname $(realpath $0))
