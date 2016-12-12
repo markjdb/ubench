@@ -1,9 +1,8 @@
 usage()
 {
     cat <<__EOF__
-Usage: ubench run <job>
+Usage: ubench run <job> [-t <tests>]
 __EOF__
-
     exit 1
 }
 
@@ -48,4 +47,11 @@ ipmitool $MACHINE_IPMITOOL power on
 
 warn "waiting for $JOB_MACHINE to boot..."
 
-sleep 300 # XXX
+while ! ping -c 1 -t 3 ${MACHINE_HOSTNAME} >/dev/null; do
+    sleep 1
+done
+
+sleep 30 # XXX wait for sshd...
+
+scp -r ${UBENCH_PATH}/bench root@${MACHINE_HOSTNAME}:/tmp
+ssh root@${MACHINE_HOSTNAME} "cd /tmp/bench && make"

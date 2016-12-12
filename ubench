@@ -39,12 +39,14 @@ if [ ! -d ${UBENCH_ROOT} ]; then
     mkdir ${UBENCH_ROOT}/machines
 fi
 
-UBENCH_CMDPATH=$(dirname $(realpath $0))
-UBENCH_CMDPREFIX=${UBENCH_CMDPATH}/cmd
-UBENCH_LIBPREFIX=${UBENCH_CMDPATH}/lib
+UBENCH_PATH=$(dirname $(realpath $0))
+UBENCH_CMDPREFIX=${UBENCH_PATH}/cmd
+UBENCH_LIBPREFIX=${UBENCH_PATH}/lib
 
 CMD_ENV="PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin"
 CMD_ENV="${CMD_ENV} UBENCH_ROOT=${UBENCH_ROOT}"
+CMD_ENV="${CMD_ENV} UBENCH_PATH=${UBENCH_PATH}"
+CMD_ENV="${CMD_ENV} UBENCH_CMDPREFIX=${UBENCH_CMDPREFIX}"
 CMD_ENV="${CMD_ENV} UBENCH_LIBPREFIX=${UBENCH_LIBPREFIX}"
 
 exec env -i ${CMD_ENV} sh "${UBENCH_CMDPREFIX}/${cmd}.sh" "$@"
